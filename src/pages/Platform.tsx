@@ -44,16 +44,26 @@ const Platform = () => {
     const base = baseValues[oilType];
     const variation = () => (Math.random() - 0.5) * 0.1;
 
-    return {
+    const result: PredictionResult = {
       oilType,
       srvCOF: Number((base.srvCOF + variation()).toFixed(3)),
       fourBallWear: Number((base.fourBallWear + variation()).toFixed(2)),
       filmThickness: Number((base.filmThickness + variation() * 5).toFixed(1)),
-      ...(oilType === 'oil1' && { viscosityStability: Number((base.viscosityStability! + variation() * 3).toFixed(1)) }),
-      ...(oilType === 'oil2' && { thermalStability: Number((base.thermalStability! + variation() * 3).toFixed(1)) }),
-      ...(oilType === 'oil3' && { oxidationResistance: Number((base.oxidationResistance! + variation() * 3).toFixed(1)) }),
       timestamp: new Date().toISOString()
     };
+
+    // Add oil-specific properties
+    if (oilType === 'oil1' && 'viscosityStability' in base) {
+      result.viscosityStability = Number((base.viscosityStability + variation() * 3).toFixed(1));
+    }
+    if (oilType === 'oil2' && 'thermalStability' in base) {
+      result.thermalStability = Number((base.thermalStability + variation() * 3).toFixed(1));
+    }
+    if (oilType === 'oil3' && 'oxidationResistance' in base) {
+      result.oxidationResistance = Number((base.oxidationResistance + variation() * 3).toFixed(1));
+    }
+
+    return result;
   };
 
   return (
