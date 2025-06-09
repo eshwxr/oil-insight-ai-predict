@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { OilType, oilTypeLabels } from '../data/oilData';
-import { SettingsIcon, CogIcon, DropletIcon, ZapIcon } from 'lucide-react';
+import { CarIcon, CogIcon, WindIcon, GearIcon } from 'lucide-react';
 
 interface OilSelectorProps {
   selectedOil: OilType;
@@ -11,11 +11,31 @@ interface OilSelectorProps {
 }
 
 const OilSelector: React.FC<OilSelectorProps> = ({ selectedOil, onOilChange }) => {
-  const oilTypes: Array<{ type: OilType; icon: React.ReactNode; color: string }> = [
-    { type: 'oil1', icon: <SettingsIcon className="h-6 w-6" />, color: 'blue' },
-    { type: 'oil2', icon: <CogIcon className="h-6 w-6" />, color: 'green' },
-    { type: 'oil3', icon: <DropletIcon className="h-6 w-6" />, color: 'purple' },
-    { type: 'oil4', icon: <ZapIcon className="h-6 w-6" />, color: 'orange' }
+  const oilTypes: Array<{ type: OilType; icon: React.ReactNode; color: string; description: string }> = [
+    { 
+      type: 'engine', 
+      icon: <CarIcon className="h-6 w-6" />, 
+      color: 'blue',
+      description: 'Automotive engine lubrication'
+    },
+    { 
+      type: 'hydraulic', 
+      icon: <CogIcon className="h-6 w-6" />, 
+      color: 'green',
+      description: 'Hydraulic system fluid'
+    },
+    { 
+      type: 'compressed', 
+      icon: <WindIcon className="h-6 w-6" />, 
+      color: 'purple',
+      description: 'Air compressor lubrication'
+    },
+    { 
+      type: 'transmission', 
+      icon: <GearIcon className="h-6 w-6" />, 
+      color: 'orange',
+      description: 'Transmission fluid'
+    }
   ];
 
   const getButtonClass = (oilType: OilType, color: string) => {
@@ -33,10 +53,10 @@ const OilSelector: React.FC<OilSelectorProps> = ({ selectedOil, onOilChange }) =
     <Card>
       <CardContent className="p-6">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Select Oil Type
+          Select Oil Type for Testing
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {oilTypes.map(({ type, icon, color }) => (
+          {oilTypes.map(({ type, icon, color, description }) => (
             <Button
               key={type}
               variant="ghost"
@@ -50,8 +70,11 @@ const OilSelector: React.FC<OilSelectorProps> = ({ selectedOil, onOilChange }) =
               }`}>
                 {icon}
               </div>
-              <span className="font-medium text-sm text-center">
+              <span className="font-medium text-sm text-center mb-1">
                 {oilTypeLabels[type]}
+              </span>
+              <span className="text-xs text-center text-gray-500">
+                {description}
               </span>
             </Button>
           ))}
@@ -59,7 +82,7 @@ const OilSelector: React.FC<OilSelectorProps> = ({ selectedOil, onOilChange }) =
         {selectedOil && (
           <div className="mt-4 p-4 bg-blue-50 rounded-lg">
             <p className="text-sm text-blue-800">
-              <strong>Selected:</strong> {oilTypeLabels[selectedOil]}
+              <strong>Selected:</strong> {oilTypeLabels[selectedOil]} - Ready for property input and testing
             </p>
           </div>
         )}

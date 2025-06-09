@@ -2,14 +2,27 @@
 import React, { useState } from 'react';
 import OilSelector from '../components/OilSelector';
 import PropertyInputForm from '../components/PropertyInputForm';
+import OperatingConditionsForm from '../components/OperatingConditionsForm';
 import PredictionResults from '../components/PredictionResults';
-import { defaultOilData, OilType, OilProperties, PredictionResult } from '../data/oilData';
+import TestHistory from '../components/TestHistory';
+import { 
+  defaultOilData, 
+  defaultOperatingConditions,
+  OilType, 
+  OilProperties, 
+  OperatingConditions,
+  TestInput,
+  PredictionResult,
+  TestHistory as TestHistoryType
+} from '../data/oilData';
 
 const Platform = () => {
-  const [selectedOil, setSelectedOil] = useState<OilType>('oil1');
-  const [oilProperties, setOilProperties] = useState<OilProperties>(defaultOilData.oil1);
+  const [selectedOil, setSelectedOil] = useState<OilType>('engine');
+  const [oilProperties, setOilProperties] = useState<OilProperties>(defaultOilData.engine);
+  const [operatingConditions, setOperatingConditions] = useState<OperatingConditions>(defaultOperatingConditions);
   const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [testHistory, setTestHistory] = useState<TestHistoryType[]>([]);
 
   const handleOilChange = (oilType: OilType) => {
     setSelectedOil(oilType);
@@ -21,47 +34,68 @@ const Platform = () => {
     setOilProperties(properties);
   };
 
+  const handleOperatingConditionsChange = (conditions: OperatingConditions) => {
+    setOperatingConditions(conditions);
+  };
+
   const handlePredict = async () => {
     setIsLoading(true);
+    
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Mock prediction - replace with actual ML model
-    const prediction = predictOilPerformance(selectedOil, oilProperties);
+    const testInput: TestInput = {
+      oilType: selectedOil,
+      properties: oilProperties,
+      operatingConditions
+    };
+    
+    // Mock prediction - replace with actual backend API call
+    const prediction = await predictOilPerformance(testInput);
     setPredictionResult(prediction);
+    
+    // Add to history
+    const historyEntry: TestHistoryType = {
+      id: Date.now().toString(),
+      input: testInput,
+      result: prediction,
+      createdAt: new Date().toISOString()
+    };
+    setTestHistory(prev => [historyEntry, ...prev]);
+    
     setIsLoading(false);
   };
 
-  const predictOilPerformance = (oilType: OilType, properties: OilProperties): PredictionResult => {
-    // Mock ML prediction logic
+  const predictOilPerformance = async (input: TestInput): Promise<PredictionResult> => {
+    // Mock ML prediction logic - replace with actual backend API call
     const baseValues = {
-      oil1: { srvCOF: 0.08, fourBallWear: 0.4, filmThickness: 30, viscosityStability: 95 },
-      oil2: { srvCOF: 0.09, fourBallWear: 0.5, filmThickness: 25, thermalStability: 92 },
-      oil3: { srvCOF: 0.07, fourBallWear: 0.3, filmThickness: 35, oxidationResistance: 88 },
-      oil4: { srvCOF: 0.085, fourBallWear: 0.45, filmThickness: 28 }
+      engine: { wear: 0.08, friction: 0.12, thermalDegradation: 15, oxidationLevel: 12 },
+      hydraulic: { wear: 0.06, friction: 0.10, thermalDegradation: 18, oxidationLevel: 14 },
+      compressed: { wear: 0.05, friction: 0.08, thermalDegradation: 20, oxidationLevel: 16 },
+      transmission: { wear: 0.07, friction: 0.09, thermalDegradation: 12, oxidationLevel: 10 }
     };
 
-    const base = baseValues[oilType];
-    const variation = () => (Math.random() - 0.5) * 0.1;
+    const base = baseValues[input.oilType];
+    const variation = () => (Math.random() - 0.5) * 0.2;
+    
+    // Adjust based on operating conditions
+    const tempFactor = (input.operatingConditions.temperature - 80) / 100;
+    const loadFactor = {
+      light: 0.8,
+      medium: 1.0,
+      heavy: 1.3,
+      extreme: 1.6
+    }[input.operatingConditions.loadCondition];
 
     const result: PredictionResult = {
-      oilType,
-      srvCOF: Number((base.srvCOF + variation()).toFixed(3)),
-      fourBallWear: Number((base.fourBallWear + variation()).toFixed(2)),
-      filmThickness: Number((base.filmThickness + variation() * 5).toFixed(1)),
-      timestamp: new Date().toISOString()
+      oilType: input.oilType,
+      wear: Math.max(0.01, Number((base.wear * loadFactor + tempFactor * 0.02 + variation() * 0.01).toFixed(3))),
+      friction: Math.max(0.01, Number((base.friction * loadFactor + tempFactor * 0.01 + variation() * 0.01).toFixed(3))),
+      thermalDegradation: Math.max(5, Number((base.thermalDegradation * (1 + tempFactor * 0.5) + variation() * 2).toFixed(1))),
+      oxidationLevel: Math.max(5, Number((base.oxidationLevel * (1 + tempFactor * 0.3) + variation() * 2).toFixed(1))),
+      timestamp: new Date().toISOString(),
+      testId: `TEST_${Date.now()}`
     };
-
-    // Add oil-specific properties
-    if (oilType === 'oil1' && 'viscosityStability' in base) {
-      result.viscosityStability = Number((base.viscosityStability + variation() * 3).toFixed(1));
-    }
-    if (oilType === 'oil2' && 'thermalStability' in base) {
-      result.thermalStability = Number((base.thermalStability + variation() * 3).toFixed(1));
-    }
-    if (oilType === 'oil3' && 'oxidationResistance' in base) {
-      result.oxidationResistance = Number((base.oxidationResistance + variation() * 3).toFixed(1));
-    }
 
     return result;
   };
@@ -71,34 +105,42 @@ const Platform = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Oil Performance Prediction Platform
+            Oil Performance Testing Platform
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Select your oil type, input properties, and get instant AI-powered performance predictions
+            Test your oil formulations across 4 different oil types with AI-powered performance predictions
           </p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Input Panel */}
-          <div className="space-y-6">
+          <div className="xl:col-span-2 space-y-6">
             <OilSelector 
               selectedOil={selectedOil} 
               onOilChange={handleOilChange} 
             />
             <PropertyInputForm
+              oilType={selectedOil}
               oilProperties={oilProperties}
               onPropertiesChange={handlePropertiesChange}
+            />
+            <OperatingConditionsForm
+              operatingConditions={operatingConditions}
+              onConditionsChange={handleOperatingConditionsChange}
               onPredict={handlePredict}
               isLoading={isLoading}
             />
           </div>
 
           {/* Output Panel */}
-          <div>
+          <div className="space-y-6">
             <PredictionResults 
               result={predictionResult}
               isLoading={isLoading}
             />
+            {testHistory.length > 0 && (
+              <TestHistory history={testHistory} />
+            )}
           </div>
         </div>
       </div>
