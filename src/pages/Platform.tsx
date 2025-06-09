@@ -93,6 +93,13 @@ const Platform = () => {
       friction: Math.max(0.01, Number((base.friction * loadFactor + tempFactor * 0.01 + variation() * 0.01).toFixed(3))),
       thermalDegradation: Math.max(5, Number((base.thermalDegradation * (1 + tempFactor * 0.5) + variation() * 2).toFixed(1))),
       oxidationLevel: Math.max(5, Number((base.oxidationLevel * (1 + tempFactor * 0.3) + variation() * 2).toFixed(1))),
+      // Additional properties for charts
+      srvCOF: Math.max(0.01, Number((base.friction * loadFactor + variation() * 0.005).toFixed(3))),
+      fourBallWear: Math.max(0.1, Number((base.wear * 5 + variation() * 0.1).toFixed(2))),
+      filmThickness: Math.max(10, Number((50 - base.wear * 200 + variation() * 5).toFixed(1))),
+      viscosityStability: Math.max(70, Number((95 - tempFactor * 10 + variation() * 5).toFixed(1))),
+      thermalStability: Math.max(70, Number((90 - tempFactor * 15 + variation() * 5).toFixed(1))),
+      oxidationResistance: Math.max(60, Number((85 - tempFactor * 12 + variation() * 5).toFixed(1))),
       timestamp: new Date().toISOString(),
       testId: `TEST_${Date.now()}`
     };

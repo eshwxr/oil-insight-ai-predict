@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { OilType, oilTypeLabels } from '../data/oilData';
-import { CarIcon, CogIcon, WindIcon, GearIcon } from 'lucide-react';
+import { CarIcon, CogIcon, WindIcon, SettingsIcon } from 'lucide-react';
 
 interface OilSelectorProps {
   selectedOil: OilType;
@@ -32,7 +32,7 @@ const OilSelector: React.FC<OilSelectorProps> = ({ selectedOil, onOilChange }) =
     },
     { 
       type: 'transmission', 
-      icon: <GearIcon className="h-6 w-6" />, 
+      icon: <SettingsIcon className="h-6 w-6" />, 
       color: 'orange',
       description: 'Transmission fluid'
     }

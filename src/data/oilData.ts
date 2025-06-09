@@ -1,4 +1,3 @@
-
 export type OilType = 'engine' | 'hydraulic' | 'compressed' | 'transmission';
 
 export interface BaseOilProperties {
@@ -74,6 +73,12 @@ export interface PredictionResult {
   oxidationLevel: number;
   timestamp: string;
   testId: string;
+  srvCOF: number;
+  fourBallWear: number;
+  filmThickness: number;
+  viscosityStability?: number;
+  thermalStability?: number;
+  oxidationResistance?: number;
 }
 
 export interface TestHistory {
