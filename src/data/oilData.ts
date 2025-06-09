@@ -165,7 +165,7 @@ export const oilTypeLabels = {
   transmission: "Transmission Oil"
 };
 
-export const propertyLabels = {
+export const propertyLabels: Record<string, { label: string; unit: string; type: string; max?: number }> = {
   // Base properties
   name: { label: "Oil Name", unit: "", type: "text" },
   viscosity40: { label: "Viscosity @40°C", unit: "cSt", type: "number" },
