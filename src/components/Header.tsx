@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BeakerIcon, MenuIcon } from 'lucide-react';
+import { Zap, MenuIcon } from 'lucide-react';
 
 const Header = () => {
   const location = useLocation();
@@ -16,8 +16,8 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <BeakerIcon className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">VIVARILY</span>
+            <Zap className="h-8 w-8 text-blue-600" />
+            <span className="text-2xl font-bold text-gray-900">AKME</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">

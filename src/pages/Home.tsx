@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckIcon, ClockIcon, BeakerIcon, TrendingUpIcon } from 'lucide-react';
+import { CheckIcon, ClockIcon, Zap, TrendingUpIcon } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -34,7 +33,7 @@ const Home = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-            Why Choose VIVARILY?
+            Why Choose AKME?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="text-center p-6 border-2 hover:border-blue-200 transition-colors">
@@ -50,7 +49,7 @@ const Home = () => {
 
             <Card className="text-center p-6 border-2 hover:border-green-200 transition-colors">
               <CardContent className="pt-6">
-                <BeakerIcon className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <Zap className="h-12 w-12 text-green-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-3">Scientific Accuracy</h3>
                 <p className="text-gray-600">
                   Advanced ML models trained on extensive datasets from IIT Kharagpur 
@@ -133,7 +132,7 @@ const Home = () => {
             Ready to Transform Your Oil Testing?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Join leading lubricant manufacturers who trust VIVARILY for accurate, 
+            Join leading lubricant manufacturers who trust AKME for accurate, 
             instant oil performance predictions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
