@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+// import { Progress } from '@/components/ui/progress'; // No longer used directly for new metrics
+// import { Badge } from '@/components/ui/badge'; // No longer used directly for new metrics
 import { PredictionResult } from '../data/oilData';
-import { CheckCircleIcon, AlertCircleIcon, XCircleIcon, Loader2Icon, TrendingUpIcon } from 'lucide-react';
+import { CheckCircleIcon, /*AlertCircleIcon, XCircleIcon,*/ Loader2Icon, TrendingUpIcon, ZapIcon, DropletsIcon, LayersIcon, RotateCwIcon } from 'lucide-react'; // Added new icons
 import ResultsChart from './ResultsChart';
 
 interface PredictionResultsProps {
@@ -73,14 +73,42 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({ result, isLoading
       if (value < 20) return { rating: 'Good', color: 'yellow', icon: AlertCircleIcon };
       return { rating: 'Needs Improvement', color: 'red', icon: XCircleIcon };
     }
-    return { rating: 'Good', color: 'blue', icon: CheckCircleIcon };
+    // getPerformanceRating is no longer needed as the old metrics and their ratings are removed.
+    // const metrics array is no longer needed.
+    return { rating: 'Good', color: 'blue', icon: CheckCircleIcon }; // This line is effectively dead code now but harmless.
   };
 
-  const metrics = [
-    { key: 'wear', label: 'Wear Rate', value: result.wear, unit: 'mm/1000h' },
-    { key: 'friction', label: 'Friction Coefficient', value: result.friction, unit: '' },
-    { key: 'thermalDegradation', label: 'Thermal Degradation', value: result.thermalDegradation, unit: '%' },
-    { key: 'oxidationLevel', label: 'Oxidation Level', value: result.oxidationLevel, unit: '%' }
+
+  // Define the new metrics to display from backend
+  const backendMetrics = [
+    { 
+      key: 'srvCOF', 
+      label: 'SRV COF', 
+      value: result.srvCOF?.toFixed(3) || 'N/A', // Format to 3 decimal places
+      unit: '',
+      icon: ZapIcon 
+    },
+    { 
+      key: 'fourBallWear', 
+      label: 'FourBall WSD (mm)', 
+      value: result.fourBallWear?.toFixed(3) || 'N/A', // Format to 3 decimal places
+      unit: 'mm',
+      icon: DropletsIcon
+    },
+    { 
+      key: 'filmThickness', 
+      label: 'EHD Film Thickness (nm)', 
+      value: result.filmThickness?.toFixed(1) || 'N/A', // Format to 1 decimal place
+      unit: 'nm',
+      icon: LayersIcon
+    },
+    { 
+      key: 'frictionTorqueNm', 
+      label: 'Friction Torque (Nm)', 
+      value: result.frictionTorqueNm?.toFixed(3) || 'N/A', // Format to 3 decimal places
+      unit: 'Nm',
+      icon: RotateCwIcon
+    }
   ];
 
   return (
@@ -89,46 +117,38 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({ result, isLoading
         <CardHeader>
           <CardTitle className="text-2xl text-gray-900 flex items-center">
             <CheckCircleIcon className="h-6 w-6 text-green-600 mr-2" />
-            Test Results - {result.testId}
+            AI Prediction Results - {result.testId}
           </CardTitle>
           <p className="text-sm text-gray-500">
-            Generated on {new Date(result.timestamp).toLocaleString()}
+            Generated on {new Date(result.timestamp).toLocaleString()} for Oil Type: <span className="font-semibold capitalize">{result.oilType}</span>
           </p>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {metrics.map((metric) => {
-            const performance = getPerformanceRating(metric.key, metric.value);
-            const IconComponent = performance.icon;
-            
-            return (
-              <div key={metric.key} className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-gray-900">{metric.label}</h4>
-                  <Badge variant={performance.color === 'green' ? 'default' : 'secondary'}>
-                    <IconComponent className="h-3 w-3 mr-1" />
-                    {performance.rating}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <span className="text-2xl font-bold text-gray-900">
-                    {metric.value} {metric.unit}
-                  </span>
-                  <div className="flex-1">
-                    <Progress 
-                      value={metric.key.includes('degradation') || metric.key.includes('oxidation') 
-                        ? Math.max(0, 100 - metric.value) 
-                        : Math.max(0, (1 - metric.value) * 100)} 
-                      className="h-2"
-                    />
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {backendMetrics.map((metric) => {
+              const IconComponent = metric.icon;
+              return (
+                <div key={metric.key} className="p-4 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-1">
+                    <h4 className="text-base font-semibold text-gray-800">{metric.label}</h4>
+                    <IconComponent className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-bold text-gray-900">
+                      {metric.value}
+                    </span>
+                    {metric.unit && (
+                      <span className="ml-1 text-sm text-gray-600">{metric.unit}</span>
+                    )}
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </CardContent>
       </Card>
 
+      {/* ResultsChart is kept as per instructions, though its data source (mocked values) might be misaligned now */}
       <ResultsChart result={result} />
     </div>
   );

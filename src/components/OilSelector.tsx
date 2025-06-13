@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { OilType, oilTypeLabels } from '../data/oilData';
+import { OilType, oilTypeLabels } from '/Users/eshwarbhadhavath/try/oil-insight-ai-predict/src/data/oilData.ts';
 import { CarIcon, CogIcon, WindIcon, SettingsIcon } from 'lucide-react';
 
 interface OilSelectorProps {

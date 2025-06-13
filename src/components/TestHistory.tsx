@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TestHistory as TestHistoryType } from '../data/oilData';
+import { TestHistory as TestHistoryType } from '/Users/eshwarbhadhavath/try/oil-insight-ai-predict/src/data/oilData.ts';
 import { HistoryIcon, ClockIcon } from 'lucide-react';
 
 interface TestHistoryProps {
